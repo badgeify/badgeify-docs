@@ -1,0 +1,71 @@
+---
+title: 'Icon Not Showing Notification Count'
+---
+
+If an app icon added via Badgeify isn't displaying the notification count (badge) when you expect it to, follow these steps to troubleshoot the issue.
+
+## 1. Check macOS Permissions
+
+Badgeify relies on the macOS Accessibility API to read notification counts from other applications. Ensure Badgeify still has the necessary permissions.
+
+1.  Open **System Settings**.
+2.  Navigate to **Privacy & Security** > **Accessibility**.
+3.  Find **Badgeify** in the list.
+4.  Make sure the toggle next to Badgeify is **ON**.
+5.  If it was already on, try toggling it OFF and then ON again. You might be prompted to enter your password.
+
+![Accessibility Permissions](https://i.imgur.com/7dnjmWM.jpeg)
+
+## 2. Check Source App's Notification Settings
+
+Ensure the application itself (e.g., Mail, Slack, Messages) is configured to show badges on its Dock icon.
+
+1.  Open the **Settings/Preferences** within the source application (e.g., Slack Preferences).
+2.  Look for **Notification** settings.
+3.  Make sure options like "Show badge count" or "Badge Dock icon" are enabled.
+
+*Note: The exact location and wording of these settings vary between applications.* 
+
+![Slack Preferences](https://i.imgur.com/GhsBvK1.png)
+
+## 3. Check Badgeify's App Settings
+
+Review the settings for the specific app within Badgeify:
+
+1.  Open **Badgeify Settings**.
+2.  Ensure no settings are preventing the badge from showing, for example:
+    *   Check if **"Hide Icon When No Notifications"** is enabled. While this shouldn't affect counts *when they exist*, double-check its status.
+
+![Badgeify Settings](https://i.imgur.com/1CzL9nm.png)
+
+## 5. Check macOS Notification Settings
+
+Ensure macOS isn't suppressing notifications for the app.
+
+1.  Open **System Settings**.
+2.  Go to **Notifications**.
+3.  Select the source application (e.g., Mail, Slack) from the list.
+4.  Make sure **"Allow Notifications"** is turned ON.
+5.  Verify that **"Badge app icon"** is also turned ON.
+
+![macOS Notification Settings](https://i.imgur.com/at4vrOO.png)
+
+## 6. Restart Applications
+
+Sometimes a simple restart can resolve temporary glitches.
+
+1.  Quit the source application (e.g., fully quit Slack).
+2.  Quit Badgeify (Right-click the Badgeify icon in the menu bar -> Quit).
+3.  Relaunch the source application.
+4.  Relaunch Badgeify.
+
+## 6. Test with Another App
+
+Try adding a different standard app (like Mail or Messages) to Badgeify. Does the badge count work correctly for that app? This helps determine if the issue is specific to one source app or a general Badgeify problem.
+
+## Still Not Working?
+
+If you've tried all the above steps and the notification count still isn't displaying correctly, please reach out for support:
+
+*   Use the **Feedback** link in the Badgeify app or documentation.
+*   Email support directly via the link in the documentation navbar.

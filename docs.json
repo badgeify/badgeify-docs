@@ -32,6 +32,7 @@
           {
             "group": "Troubleshooting",
             "pages": [
+              "troubleshooting/missing-notification-counts",
               "troubleshooting/deactivate-device"
             ]
           }
