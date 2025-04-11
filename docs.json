@@ -85,7 +85,8 @@
   },
   "integrations": {
     "plausible": {
-      "domain": "plausible.techflow.studio"
+      "server": "plausible.techflow.studio",
+      "domain": "docs.badgeify.app"
     }
   }
 }
