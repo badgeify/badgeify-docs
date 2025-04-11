@@ -78,7 +78,14 @@
   },
   "footer": {
     "socials": {
+      "website": "https://badgeify.app",
+      "hacker-news": "https://news.ycombinator.com/item?id=43620471",
       "x": "https://x.com/badgeify"
+    }
+  },
+  "integrations": {
+    "plausible": {
+      "domain": "plausible.techflow.studio"
     }
   }
 }
