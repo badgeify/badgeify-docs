@@ -1,0 +1,50 @@
+---
+title: 'Compatibility with Ice'
+---
+
+Some users have reported an issue when using Badgeify alongside the Ice menu bar manager.
+
+## The Issue
+
+When using Ice to manage menu bar items, Badgeify icons may be automatically moved to the "Always Hidden" or "Hidden" section after:
+- System restart
+- Application restart
+- Adding new icons dynamically
+
+This behavior is particularly noticeable with dynamically appearing menu bar items, such as when Badgeify adds new notification badges or updates existing ones.
+
+## Cause
+
+This is a known issue with Ice's menu bar item management system, as documented in their [GitHub issue tracker](https://github.com/jordanbaird/Ice/issues/344). The issue appears to stem from how Ice handles menu bar items that:
+
+1. Appear after Ice has already started
+2. Disappear and reappear dynamically
+3. Update their state or appearance
+
+Since Badgeify actively manages notification badges and updates icons based on application states, it can trigger this behavior in Ice.
+
+## Current Status
+
+This is a known limitation in Ice's current implementation, affecting not just Badgeify but also other applications with dynamic menu bar items, including:
+- Discord voice channel controls
+- Calendar apps with dynamic updates
+- Applications with changing status indicators
+
+## Workarounds
+
+While there isn't a permanent solution yet, you have several options:
+
+1. **Manual Repositioning:**
+   - Manually drag Badgeify icons back to your preferred section after they move
+   - Note that you may need to repeat this after system or application restarts
+
+2. **Use Alternative Menu Bar Managers:**
+   - Consider using [Bartender](https://www.macbartender.com/) instead, which has better handling of dynamic menu bar items
+   - Bartender remembers icon positions and handles dynamic updates more reliably
+
+## Future Resolution
+
+The Ice development team is aware of this issue and it may be addressed in future updates. You can:
+- Follow the [GitHub issue](https://github.com/jordanbaird/Ice/issues/344) for updates
+- Consider contributing to the discussion with your specific use case
+- Watch for new Ice releases that might improve dynamic item handling 
