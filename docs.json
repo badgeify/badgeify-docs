@@ -68,6 +68,10 @@
     "light": "/logo/light.png",
     "dark": "/logo/dark.png"
   },
+  "appearance": {
+    "default": "light",
+    "strict": false
+  },
   "navbar": {
     "links": [
       {
