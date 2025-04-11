@@ -73,7 +73,7 @@
     "primary": {
       "type": "button",
       "label": "Download",
-      "href": "https://badgeify.app/download"
+      "href": "https://badgeify.app/download/"
     }
   },
   "footer": {
