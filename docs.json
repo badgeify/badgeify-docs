@@ -11,7 +11,7 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Documentation",
         "groups": [
           {
             "group": "Get Started",
@@ -43,12 +43,12 @@
         {
           "anchor": "Homepage",
           "href": "https://badgeify.app",
-          "icon": "home"
+          "icon": "house"
         },
         {
           "anchor": "Feedback",
           "href": "https://badgeify.featurebase.app",
-          "icon": "slack"
+          "icon": "message-square-dot"
         }
       ]
     }
