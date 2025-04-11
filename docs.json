@@ -23,9 +23,9 @@
           {
             "group": "Features",
             "pages": [
-              "features/notifications",
-              "features/customization",
-              "features/organization"
+              "features/icon-visibility",
+              "features/customize-icon",
+              "features/app-groups"
             ]
           },
           {
