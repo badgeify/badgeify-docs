@@ -16,20 +16,29 @@
           {
             "group": "Get Started",
             "pages": [
-              "introduction",
-              "quickstart",
-              "development"
+              "get-started/introduction",
+              "get-started/quickstart"
             ]
           },
           {
-            "group": "Essentials",
+            "group": "Features",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/settings",
-              "essentials/navigation",
-              "essentials/reusable-snippets"
+              "core-features/notifications",
+              "core-features/customization",
+              "core-features/organization"
+            ]
+          },
+          {
+            "group": "App Guides",
+            "pages": [
+              "app-guides/adding-apps",
+              "app-guides/whatsapp",
+              "app-guides/discord",
+              "app-guides/messenger",
+              "app-guides/slack",
+              "app-guides/mail",
+              "app-guides/messages",
+              "app-guides/teams"
             ]
           }
         ]
