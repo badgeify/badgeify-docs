@@ -25,6 +25,7 @@
             "pages": [
               "features/customize-icon",
               "features/icon-visibility",
+              "features/highlight-color",
               "features/app-groups"
             ]
           }
