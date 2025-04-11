@@ -33,6 +33,7 @@
             "group": "Troubleshooting",
             "pages": [
               "troubleshooting/missing-notification-counts",
+              "troubleshooting/compatibility-hidden-bar",
               "troubleshooting/deactivate-device"
             ]
           }

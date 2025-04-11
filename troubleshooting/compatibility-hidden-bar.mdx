@@ -1,0 +1,37 @@
+---
+title: 'Compatibility with Hidden Bar'
+---
+
+Some users have reported an issue when using Badgeify alongside the popular menu bar management app, Hidden Bar.
+
+## The Issue
+
+When Badgeify starts, or when it adds a new application icon to the menu bar, Hidden Bar might automatically move this new icon into its hidden section. This requires you to manually drag the Badgeify icon back into the always-visible section of the menu bar each time.
+
+## Cause
+
+This behaviour stems from how Hidden Bar handles newly added menu bar items. By default, Hidden Bar places any icon that appears *after* Hidden Bar has started into its hidden area. Since Badgeify icons are added dynamically, Hidden Bar treats them as "new" and hides them.
+
+This is a known interaction described in the Hidden Bar issue tracker:
+[https://github.com/dwarvesf/hidden/issues/156](https://github.com/dwarvesf/hidden/issues/156)
+
+## Resolution
+
+Currently, there is no setting within Badgeify to prevent this interaction.
+
+The optimal solution requires an update to the Hidden Bar application itself. Ideally, Hidden Bar would provide an option to *not* automatically hide newly appearing menu bar icons, similar to functionality found in other menu bar management tools like Bartender.
+
+## Workaround
+
+The only current workaround is to manually drag the Badgeify-managed icons from the hidden section to the visible section after they appear.
+
+We recommend users experiencing this issue monitor the linked GitHub issue in the Hidden Bar repository for updates or consider reaching out to the Hidden Bar developers to request the feature described above.
+
+## Alternatives
+
+If the automatic hiding behaviour of Hidden Bar is disruptive to your workflow with Badgeify, you might consider using alternative menu bar management tools that offer more control over how new items are handled:
+
+*   **[Bartender](https://www.macbartender.com/):** A long-standing and feature-rich menu bar manager known for its robust customization options, including how new items are treated.
+*   **[Ice](https://github.com/jordanbaird/Ice):** A powerful open-source alternative that also provides extensive control over menu bar items.
+
+These applications may provide a smoother experience when used alongside Badgeify. 
