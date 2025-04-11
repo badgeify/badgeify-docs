@@ -23,8 +23,8 @@
           {
             "group": "Features",
             "pages": [
-              "features/icon-visibility",
               "features/customize-icon",
+              "features/icon-visibility",
               "features/app-groups"
             ]
           },
