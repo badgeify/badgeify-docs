@@ -27,20 +27,13 @@
               "features/icon-visibility",
               "features/app-groups"
             ]
-          },
-          {
-            "group": "App Guides",
-            "pages": [
-              "app-guides/adding-apps",
-              "app-guides/whatsapp",
-              "app-guides/discord",
-              "app-guides/messenger",
-              "app-guides/slack",
-              "app-guides/mail",
-              "app-guides/messages",
-              "app-guides/teams"
-            ]
           }
+        ]
+      },
+      {
+        "tab": "Troubleshooting",
+        "pages": [
+          "troubleshooting/deactivate-device"
         ]
       }
     ],
