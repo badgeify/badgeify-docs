@@ -16,16 +16,16 @@
           {
             "group": "Get Started",
             "pages": [
-              "get-started/introduction",
-              "get-started/quickstart"
+              "introduction",
+              "quickstart"
             ]
           },
           {
             "group": "Features",
             "pages": [
-              "core-features/notifications",
-              "core-features/customization",
-              "core-features/organization"
+              "features/notifications",
+              "features/customization",
+              "features/organization"
             ]
           },
           {
