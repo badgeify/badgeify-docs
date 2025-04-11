@@ -28,32 +28,27 @@
               "features/highlight-color",
               "features/app-groups"
             ]
+          },
+          {
+            "group": "Troubleshooting",
+            "pages": [
+              "troubleshooting/deactivate-device"
+            ]
           }
-        ]
-      },
-      {
-        "tab": "Troubleshooting",
-        "pages": [
-          "troubleshooting/deactivate-device"
         ]
       }
     ],
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "Homepage",
+          "href": "https://badgeify.app",
+          "icon": "home"
         },
         {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
+          "anchor": "Feedback",
+          "href": "https://badgeify.featurebase.app",
           "icon": "slack"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
         }
       ]
     }
