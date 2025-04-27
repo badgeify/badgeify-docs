@@ -1,32 +1,54 @@
-# Mintlify Starter Kit
+# Badgeify Documentation
 
-Click on `Use this template` to copy the Mintlify starter kit. The starter kit contains examples including
+This repository contains the official documentation for Badgeify, a macOS menu bar app that transforms your Mac's menu bar into a powerful notification and app launching hub.
 
-- Guide pages
-- Navigation
-- Customizations
-- API Reference pages
-- Use of popular components
+## About Badgeify
 
-### Development
+Badgeify is your ultimate menu bar companion for macOS that helps you:
+- Stay updated with notifications from all your apps
+- Launch applications quickly
+- Keep your workspace clean and organized
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mintlify) to preview the documentation changes locally. To install, use the following command
+## Documentation Structure
 
-```
-npm i -g mintlify
-```
+The documentation is organized as follows:
 
-Run the following command at the root of your documentation (where docs.json is)
+- **Get Started**
+  - `introduction.mdx` - Overview of Badgeify
+  - `quickstart.mdx` - Installation and setup guide
 
-```
-mintlify dev
-```
+- **Features**
+  - `customize-icon.mdx` - How to customize application icons
+  - `icon-visibility.mdx` - Managing icon visibility
+  - `highlight-color.mdx` - Customizing notification highlight colors
+  - `app-groups.mdx` - Creating and managing app groups
 
-### Publishing Changes
+- **Troubleshooting**
+  - Various guides to solve common issues
 
-Install our Github App to auto propagate changes from your repo to your deployment. Changes will be deployed to production automatically after pushing to the default branch. Find the link to install on your dashboard. 
+## Development
 
-#### Troubleshooting
+This documentation is built with [Mintlify](https://mintlify.com), as specified in the `docs.json` configuration file.
 
-- Mintlify dev isn't running - Run `mintlify install` it'll re-install dependencies.
-- Page loads as a 404 - Make sure you are running in a folder with `docs.json`
+### Local Development
+
+To run the documentation locally:
+
+1. Install Mintlify CLI: `npm install -g mintlify`
+2. Run the development server: `mintlify dev`
+3. Visit `http://localhost:3000` to preview the documentation
+
+## Deployment
+
+The documentation is automatically deployed through Mintlify's platform when changes are pushed to the main branch.
+
+## External Links
+
+- [Badgeify Website](https://badgeify.app)
+- [Download Badgeify](https://badgeify.app/download)
+- [Feedback Portal](https://badgeify.featurebase.app)
+- [Support](mailto:support@badgeify.app)
+
+## License
+
+Please refer to the project license for usage terms and conditions. 
