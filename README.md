@@ -45,7 +45,7 @@ The documentation is automatically deployed through Mintlify's platform when cha
 ## External Links
 
 - [Badgeify Website](https://badgeify.app)
-- [Download Badgeify](https://badgeify.app/download)
+- [Download Badgeify](https://badgeify.app/download/)
 - [Feedback Portal](https://badgeify.featurebase.app)
 - [Support](mailto:support@badgeify.app)
 
