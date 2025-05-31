@@ -50,8 +50,8 @@
         },
         {
           "anchor": "Feedback",
-          "href": "https://badgeify.featurebase.app",
-          "icon": "message"
+          "href": "mailto:support@badgeify.app",
+          "icon": "mail"
         }
       ]
     }
