@@ -47,11 +47,6 @@
           "anchor": "Homepage",
           "href": "https://badgeify.app",
           "icon": "house"
-        },
-        {
-          "anchor": "Feedback",
-          "href": "mailto:support@badgeify.app",
-          "icon": "email"
         }
       ]
     }
