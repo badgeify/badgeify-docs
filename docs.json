@@ -24,6 +24,7 @@
             "group": "Features",
             "pages": [
               "features/customize-icon",
+              "features/badge-styles",
               "features/icon-visibility",
               "features/highlight-color",
               "features/app-groups"
