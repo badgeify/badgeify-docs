@@ -1,479 +1,86 @@
 ---
-title: 'CLI Automation & Hammerspoon Integration'
+title: 'CLI Integration'
 description: 'Control and monitor Badgeify programmatically using the command-line interface'
 ---
 
-Badgeify includes a powerful command-line interface (CLI) that enables automation tools like Hammerspoon to monitor notification badges and trigger custom actions. This guide shows you how to integrate Badgeify with your automation workflows.
+<Warning>
+  **Version Requirement**: CLI automation is only available in Badgeify version 1.9.2 and later.
+  Please update to the latest version if you're running an older release.
+</Warning>
 
-## Overview
+# Badgeify Command-Line Interface
 
-The CLI allows external scripts to:
-- Query current badge counts for any app or group
-- Check badge states (visible, cleared, acknowledged)
-- Monitor changes in real-time through polling
-- Build custom notification workflows
+Badgeify bundles a lightweight CLI inside the desktop binary so automations can inspect notification badges without launching the UI. Run the `Badgeify` executable with one of the supported subcommands to query state and exit immediately.
 
-All CLI commands return JSON output, making them easy to parse in automation scripts.
+```
+Badgeify <subcommand> [options]
+```
+
+The process prints a JSON payload to stdout and terminates with exit code `0` on success and `1` on error. Errors are emitted on stderr.
 
 ## Prerequisites
 
-Before using the CLI, ensure:
+- Badgeify must already be configured with the apps or groups you want to monitor.
+- macOS accessibility permissions are required. If the CLI fails with a `NO_PERMISSIONS` error, grant access via **System Settings → Privacy & Security → Accessibility** and relaunch Badgeify once to register the permission.
 
-1. **Badgeify is Configured**: The apps or groups you want to monitor must already be set up in Badgeify
-2. **Accessibility Permission Granted**: macOS requires accessibility access for badge monitoring
-   - Open **System Settings → Privacy & Security → Accessibility**
-   - Add Badgeify to the allowed apps
-   - Relaunch Badgeify once to register the permission
+## Discover Available IDs
 
-If you encounter a `NO_PERMISSIONS` error, this step is required.
+Use `list` to retrieve the apps and groups that can be queried. Each entry exposes an `id`, `type`, `name`, and whether it is currently enabled.
 
-## Basic CLI Usage
-
-The CLI is bundled inside the Badgeify desktop app. Run commands using:
-
-```bash
-/Applications/Badgeify.app/Contents/MacOS/Badgeify <command> [options]
+```
+$ Badgeify list
+{"success":true,"data":[{"id":"com.apple.Mail","type":"app","name":"Mail"}]}
 ```
 
-<Tip>
-Create an alias in your `.zshrc` or `.bashrc` for convenience:
-```bash
-alias badgeify='/Applications/Badgeify.app/Contents/MacOS/Badgeify'
+The `id` field becomes the argument for other subcommands.
+
+> **Free tier note:** Without an active license, only the first three configured items are returned.
+
+## Query Unread Status
+
+Fetch the current menubar badge for a specific app or group with `status` and the `--id` flag.
+
 ```
-</Tip>
-
-### Discover Available Apps
-
-Use the `list` command to see all configured apps and groups:
-
-```bash
-badgeify list
+$ Badgeify status --id com.apple.Mail
+{"success":true,"data":{"type":"app","id":"com.apple.Mail","name":"Mail","enabled":true,"isRunning":true,"shown":true,"unread":5,"statusLabel":"5"}}
 ```
 
-**Example output:**
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "id": "com.apple.Mail",
-      "type": "app",
-      "name": "Mail",
-      "enabled": true
-    },
-    {
-      "id": "com.tinyspeck.slackmacgap",
-      "type": "app",
-      "name": "Slack",
-      "enabled": true
-    }
-  ]
-}
+Important fields:
+
+- `unread` – integer badge count (0 when cleared).
+- `statusLabel` – raw menubar badge text (mirrors what macOS reports).
+- `shown` – whether the item is currently visible in the Badgeify tray.
+- `isRunning` – whether the underlying app is running right now.
+
+If the requested ID is unknown, the CLI returns a `NOT_FOUND` error:
+
+```
+$ Badgeify status --id unknown
+{"success":false,"error":{"code":"NOT_FOUND","message":"No app or group found with ID: unknown","details":{"requestedId":"unknown"}}}
 ```
 
-The `id` field is what you'll use in subsequent commands.
-
-<Note>
-**Free Tier Limitation**: Without an active license, only the first three configured items are returned.
-</Note>
-
-### Query Badge Status
-
-Get the current badge count for a specific app or group:
-
-```bash
-badgeify status --id com.apple.Mail
-```
-
-**Example output:**
-```json
-{
-  "success": true,
-  "data": {
-    "type": "app",
-    "id": "com.apple.Mail",
-    "name": "Mail",
-    "enabled": true,
-    "isRunning": true,
-    "shown": true,
-    "unread": 5,
-    "statusLabel": "5"
-  }
-}
-```
-
-**Key Fields:**
-- `unread` (integer) — Current badge count; `0` when cleared
-- `statusLabel` (string) — Raw badge text as shown in the menu bar
-- `shown` (boolean) — Whether the item is currently visible in Badgeify
-- `isRunning` (boolean) — Whether the underlying app is currently running
-
-## Hammerspoon Integration
-
-Here's a complete example that monitors Badgeify badges and plays a ringtone when unread notifications appear — exactly the workflow Vivek requested.
-
-### Installation
-
-1. Install [Hammerspoon](https://www.hammerspoon.org/)
-2. Add the following configuration to your `~/.hammerspoon/init.lua`
-
-### Complete Example: Ringtone Alert
-
-This script continuously monitors badge counts and plays a ringtone when notifications are present:
-
-```lua
--- Badgeify Badge Monitor with Ringtone Alert
--- Place this in ~/.hammerspoon/init.lua
-
-local BADGEIFY_CLI = "/Applications/Badgeify.app/Contents/MacOS/Badgeify"
-local POLL_INTERVAL = 3 -- Check every 3 seconds
-local APP_ID = "com.apple.Mail" -- Change to your target app ID
-local RINGTONE_PATH = "/System/Library/Sounds/Glass.aiff" -- System sound
-
-local currentSound = nil
-local lastUnreadCount = 0
-
--- Parse JSON output from Badgeify CLI
-function parseJSON(jsonString)
-    local success, result = pcall(function()
-        return hs.json.decode(jsonString)
-    end)
-    if success then
-        return result
-    else
-        print("Failed to parse JSON: " .. jsonString)
-        return nil
-    end
-end
-
--- Query badge status from Badgeify
-function getBadgeStatus(appId)
-    local output, status = hs.execute(
-        string.format("%s status --id %s", BADGEIFY_CLI, appId)
-    )
-
-    if status then
-        local data = parseJSON(output)
-        if data and data.success then
-            return data.data.unread or 0
-        end
-    end
-
-    return 0
-end
-
--- Start playing ringtone (loops continuously)
-function startRingtone()
-    if not currentSound then
-        currentSound = hs.sound.getByFile(RINGTONE_PATH)
-        if currentSound then
-            currentSound:loopSound(true)
-            currentSound:play()
-            print("🔔 Ringtone started")
-        end
-    end
-end
-
--- Stop playing ringtone
-function stopRingtone()
-    if currentSound then
-        currentSound:stop()
-        currentSound = nil
-        print("🔕 Ringtone stopped")
-    end
-end
-
--- Main monitoring function
-function checkBadgeAndReact()
-    local unreadCount = getBadgeStatus(APP_ID)
-
-    -- Badge count changed
-    if unreadCount ~= lastUnreadCount then
-        print(string.format("Badge changed: %d → %d", lastUnreadCount, unreadCount))
-        lastUnreadCount = unreadCount
-    end
-
-    -- Start ringtone when badges appear
-    if unreadCount > 0 then
-        startRingtone()
-    else
-        stopRingtone()
-    end
-end
-
--- Start monitoring
-function startMonitoring()
-    print(string.format("Starting Badgeify monitor for: %s", APP_ID))
-
-    -- Initial check
-    checkBadgeAndReact()
-
-    -- Set up periodic polling
-    badgeifyTimer = hs.timer.doEvery(POLL_INTERVAL, checkBadgeAndReact)
-end
-
--- Stop monitoring
-function stopMonitoring()
-    if badgeifyTimer then
-        badgeifyTimer:stop()
-        badgeifyTimer = nil
-    end
-    stopRingtone()
-    print("Badgeify monitoring stopped")
-end
-
--- Start automatically when Hammerspoon loads
-startMonitoring()
-
--- Reload configuration binding (optional)
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "R", function()
-    hs.reload()
-end)
-
-print("Badgeify integration loaded. Monitor running.")
-```
-
-### How It Works
-
-1. **Polling**: Queries Badgeify every 3 seconds using the CLI
-2. **State Detection**: Compares current badge count to previous count
-3. **Ringtone Control**:
-   - Starts looping ringtone when `unread > 0`
-   - Stops ringtone when `unread == 0`
-4. **Logging**: Prints status changes to Hammerspoon console
-
-### Customization Options
-
-**Change Target App:**
-```lua
-local APP_ID = "com.tinyspeck.slackmacgap" -- Monitor Slack instead
-```
-
-**Adjust Polling Speed:**
-```lua
-local POLL_INTERVAL = 5 -- Check every 5 seconds (reduces CPU usage)
-```
-
-**Use Custom Ringtone:**
-```lua
-local RINGTONE_PATH = "/Users/yourname/Music/ringtone.aiff"
-```
-
-**Monitor Multiple Apps:**
-```lua
-local APPS_TO_MONITOR = {
-    "com.apple.Mail",
-    "com.tinyspeck.slackmacgap"
-}
-
-function checkMultipleApps()
-    local totalUnread = 0
-    for _, appId in ipairs(APPS_TO_MONITOR) do
-        totalUnread = totalUnread + getBadgeStatus(appId)
-    end
-
-    if totalUnread > 0 then
-        startRingtone()
-    else
-        stopRingtone()
-    end
-end
-```
-
-## Advanced Patterns
-
-### React to Specific Badge Thresholds
-
-Trigger different actions based on badge count:
-
-```lua
-function checkBadgeWithThresholds()
-    local count = getBadgeStatus(APP_ID)
-
-    if count >= 10 then
-        -- Critical: Many unread items
-        hs.alert.show("⚠️ 10+ unread notifications!")
-        startUrgentAlert()
-    elseif count > 0 then
-        -- Normal: Some unread items
-        startRingtone()
-    else
-        -- All clear
-        stopRingtone()
-    end
-end
-```
-
-### Notification Integration
-
-Send macOS notifications when badges appear:
-
-```lua
-function notifyOnBadgeChange()
-    local count = getBadgeStatus(APP_ID)
-
-    if count > lastUnreadCount then
-        hs.notify.new({
-            title = "Badgeify Alert",
-            informativeText = string.format("You have %d unread notifications", count)
-        }):send()
-    end
-
-    lastUnreadCount = count
-end
-```
-
-### Shell Script Integration
-
-Use the CLI directly in shell scripts:
-
-```bash
-#!/bin/bash
-
-# Get badge count for Mail app
-BADGE_JSON=$(badgeify status --id com.apple.Mail)
-UNREAD=$(echo "$BADGE_JSON" | jq '.data.unread')
-
-if [ "$UNREAD" -gt 0 ]; then
-    echo "You have $UNREAD unread emails"
-    osascript -e 'display notification "Check your emails!" with title "Mail Alert"'
-fi
-```
-
-### Extract Badge Count with `jq`
-
-Parse JSON easily in shell scripts:
-
-```bash
-# Get just the unread count
-badgeify status --id com.apple.Mail | jq '.data.unread'
-
-# Check if app is running
-badgeify status --id com.apple.Mail | jq '.data.isRunning'
-
-# Get badge label text
-badgeify status --id com.apple.Mail | jq -r '.data.statusLabel'
-```
-
-## Error Handling
-
-The CLI returns detailed error messages when things go wrong:
-
-### Unknown App ID
-
-```bash
-$ badgeify status --id unknown.app
-```
-
-**Output:**
-```json
-{
-  "success": false,
-  "error": {
-    "code": "NOT_FOUND",
-    "message": "No app or group found with ID: unknown.app",
-    "details": {
-      "requestedId": "unknown.app"
-    }
-  }
-}
-```
-
-**Solution**: Use `badgeify list` to find the correct app ID.
-
-### Permission Denied
-
-```bash
-$ badgeify status --id com.apple.Mail
-```
-
-**Output:**
-```json
-{
-  "success": false,
-  "error": {
-    "code": "NO_PERMISSIONS",
-    "message": "Accessibility permission required"
-  }
-}
-```
-
-**Solution**: Grant Badgeify accessibility access in System Settings.
-
-### Free Tier Restriction
-
-```json
-{
-  "success": false,
-  "error": {
-    "code": "FORBIDDEN",
-    "message": "This feature requires a Badgeify license"
-  }
-}
-```
-
-**Solution**: Upgrade to a paid license or use one of the first three configured apps.
+> **Free tier note:** For unlicensed users, `status` is limited to the first three configured items and returns a `FORBIDDEN` error for others.
 
 ## Exit Codes
 
-The CLI uses standard exit codes for automation scripts:
+- `0` – Command succeeded and JSON was printed to stdout.
+- `1` – Validation, permission, or runtime error; JSON error payload printed to stderr.
 
-- **Exit 0**: Command succeeded; JSON printed to stdout
-- **Exit 1**: Error occurred; JSON error payload printed to stderr
+## Automation Tips
 
-**Example script usage:**
-
-```bash
-if badgeify status --id com.apple.Mail > /dev/null 2>&1; then
-    echo "✓ Command succeeded"
-else
-    echo "✗ Command failed"
-fi
-```
-
-## Performance Considerations
-
-### Polling Frequency
-
-- **3-5 seconds**: Responsive, suitable for active monitoring
-- **10-30 seconds**: Background monitoring with minimal CPU usage
-- **< 1 second**: Not recommended; may impact performance
-
-### Detecting the CLI Environment
-
-The CLI sets `BADGEIFY_CLI_MODE=1` in the environment. Use this in scripts to detect when running via CLI:
-
-```bash
-if [ "$BADGEIFY_CLI_MODE" = "1" ]; then
-    echo "Running in CLI mode"
-fi
-```
+- The CLI sets the `BADGEIFY_CLI_MODE=1` environment variable while running. You can detect this flag inside scripts if needed.
+- Poll `Badgeify status --id <bundle>` on an interval to react to badge changes from tools like Hammerspoon.
+- Parse stdout as JSON to inspect `unread`. For shell scripting, tools such as `jq` make it easy:
+  - `Badgeify status --id com.apple.Mail | jq '.data.unread'`
 
 ## Troubleshooting
 
-| Symptom | Likely Cause | Resolution |
-|---------|--------------|------------|
-| `NO_PERMISSIONS` error | Accessibility not granted | Add Badgeify to Accessibility in System Settings, relaunch app |
-| Badge count differs from dock | App suppresses menu bar badges | Confirm badge appears in macOS menu bar; Badgeify reports what macOS exposes |
-| CLI exits without JSON | Syntax error or invalid command | Run `badgeify --help` to verify syntax; check stderr for error details |
-| Hammerspoon script not working | Incorrect app ID or path | Verify app ID with `badgeify list`; confirm CLI path is correct |
+| Symptom                             | Likely Cause                                                        | Resolution                                                                                   |
+| ----------------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `NO_PERMISSIONS` error              | Accessibility access not granted                                    | Open System Settings, add Badgeify to Accessibility, relaunch the app                        |
+| CLI exits without printing JSON     | Command failed before reaching the handler                          | Re-run with `Badgeify --help` to verify syntax; check stderr for the error payload           |
+| Badge count differs from macOS dock | The monitored app may suppress menubar badges or accessibility APIs | Confirm the badge appears in the macOS menu bar. Badgeify reports exactly what macOS exposes |
 
 ## Getting Help
 
-If you encounter issues or need assistance with automation:
-
-- Check the [Badgeify documentation](https://docs.badgeify.app)
-- Email support: [support@badgeify.app](mailto:support@badgeify.app)
-- Include CLI output and error messages for faster troubleshooting
-
-## Real-World Use Cases
-
-Here are some practical automation scenarios:
-
-1. **Smart Focus Mode**: Automatically enable Do Not Disturb when certain apps have high badge counts
-2. **Task Automation**: Trigger workflows in tools like Keyboard Maestro based on badge states
-3. **Slack Bot Integration**: Report unread counts to team channels via webhook
-4. **Dashboard Display**: Show real-time badge counts on external displays or Stream Decks
-5. **Productivity Tracking**: Log badge patterns to identify notification-heavy apps
-
-The CLI makes Badgeify a first-class citizen in the macOS automation ecosystem.
+If the CLI output looks incorrect or you encounter issues not covered here, please capture the command output and email support@badgeify.app so we can investigate.
