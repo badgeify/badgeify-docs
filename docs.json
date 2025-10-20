@@ -27,7 +27,14 @@
               "features/badge-styles",
               "features/icon-visibility",
               "features/highlight-color",
+              "features/badge-styles",
               "features/app-groups"
+            ]
+          },
+          {
+            "group": "Automation",
+            "pages": [
+              "automation/cli-integration"
             ]
           },
           {
