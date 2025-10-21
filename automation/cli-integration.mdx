@@ -10,13 +10,65 @@ description: 'Control and monitor Badgeify programmatically using the command-li
 
 # Badgeify Command-Line Interface
 
-Badgeify bundles a lightweight CLI inside the desktop binary so automations can inspect notification badges without launching the UI. Run the `Badgeify` executable with one of the supported subcommands to query state and exit immediately.
+Badgeify bundles a lightweight CLI inside the desktop binary so automations can inspect notification badges without launching the UI. Run the `badgeify` executable with one of the supported subcommands to query state and exit immediately.
 
-```
-Badgeify <subcommand> [options]
+```bash
+badgeify <subcommand> [options]
 ```
 
 The process prints a JSON payload to stdout and terminates with exit code `0` on success and `1` on error. Errors are emitted on stderr.
+
+## Installation & Setup
+
+### Locating the CLI Executable
+
+After installing Badgeify via the dmg, the CLI executable is bundled inside the application package at:
+
+```bash
+/Applications/Badgeify.app/Contents/MacOS/Badgeify
+```
+
+### Making the CLI Accessible
+
+You have several options to use the CLI conveniently:
+
+**Option 1: Create an alias (Recommended)**
+
+Add this line to your shell configuration file (`~/.zshrc` for zsh or `~/.bashrc` for bash):
+
+```bash
+alias badgeify="/Applications/Badgeify.app/Contents/MacOS/Badgeify"
+```
+
+Then reload your shell configuration:
+
+```bash
+source ~/.zshrc  # or source ~/.bashrc
+```
+
+**Option 2: Create a symbolic link**
+
+```bash
+sudo ln -s /Applications/Badgeify.app/Contents/MacOS/Badgeify /usr/local/bin/badgeify
+```
+
+**Option 3: Use the full path**
+
+You can always invoke the CLI using the complete path without any setup:
+
+```bash
+/Applications/Badgeify.app/Contents/MacOS/Badgeify list
+```
+
+### Verify Installation
+
+Test that the CLI is accessible by running:
+
+```bash
+badgeify --help  # if using alias or symlink
+# or
+/Applications/Badgeify.app/Contents/MacOS/Badgeify --help
+```
 
 ## Prerequisites
 
@@ -27,8 +79,12 @@ The process prints a JSON payload to stdout and terminates with exit code `0` on
 
 Use `list` to retrieve the apps and groups that can be queried. Each entry exposes an `id`, `type`, `name`, and whether it is currently enabled.
 
-```
-$ Badgeify list
+<Note>
+  The following examples use `badgeify` as the command. If you haven't set up an alias or symlink, replace `badgeify` with the full path `/Applications/Badgeify.app/Contents/MacOS/Badgeify`.
+</Note>
+
+```bash
+$ badgeify list
 {"success":true,"data":[{"id":"com.apple.Mail","type":"app","name":"Mail"}]}
 ```
 
@@ -40,8 +96,8 @@ The `id` field becomes the argument for other subcommands.
 
 Fetch the current menubar badge for a specific app or group with `status` and the `--id` flag.
 
-```
-$ Badgeify status --id com.apple.Mail
+```bash
+$ badgeify status --id com.apple.Mail
 {"success":true,"data":{"type":"app","id":"com.apple.Mail","name":"Mail","enabled":true,"isRunning":true,"shown":true,"unread":5,"statusLabel":"5"}}
 ```
 
@@ -54,8 +110,8 @@ Important fields:
 
 If the requested ID is unknown, the CLI returns a `NOT_FOUND` error:
 
-```
-$ Badgeify status --id unknown
+```bash
+$ badgeify status --id unknown
 {"success":false,"error":{"code":"NOT_FOUND","message":"No app or group found with ID: unknown","details":{"requestedId":"unknown"}}}
 ```
 
@@ -69,16 +125,18 @@ $ Badgeify status --id unknown
 ## Automation Tips
 
 - The CLI sets the `BADGEIFY_CLI_MODE=1` environment variable while running. You can detect this flag inside scripts if needed.
-- Poll `Badgeify status --id <bundle>` on an interval to react to badge changes from tools like Hammerspoon.
+- Poll `badgeify status --id <bundle>` on an interval to react to badge changes from tools like Hammerspoon.
 - Parse stdout as JSON to inspect `unread`. For shell scripting, tools such as `jq` make it easy:
-  - `Badgeify status --id com.apple.Mail | jq '.data.unread'`
+  ```bash
+  badgeify status --id com.apple.Mail | jq '.data.unread'
+  ```
 
 ## Troubleshooting
 
 | Symptom                             | Likely Cause                                                        | Resolution                                                                                   |
 | ----------------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | `NO_PERMISSIONS` error              | Accessibility access not granted                                    | Open System Settings, add Badgeify to Accessibility, relaunch the app                        |
-| CLI exits without printing JSON     | Command failed before reaching the handler                          | Re-run with `Badgeify --help` to verify syntax; check stderr for the error payload           |
+| CLI exits without printing JSON     | Command failed before reaching the handler                          | Re-run with `badgeify --help` to verify syntax; check stderr for the error payload           |
 | Badge count differs from macOS dock | The monitored app may suppress menubar badges or accessibility APIs | Confirm the badge appears in the macOS menu bar. Badgeify reports exactly what macOS exposes |
 
 ## Getting Help
