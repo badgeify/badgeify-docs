@@ -40,6 +40,7 @@
             "group": "Troubleshooting",
             "pages": [
               "troubleshooting/missing-notification-counts",
+              "troubleshooting/regrant-accessibility-permissions",
               "troubleshooting/compatibility-hidden-bar",
               "troubleshooting/compatibility-ice",
               "troubleshooting/deactivate-device"

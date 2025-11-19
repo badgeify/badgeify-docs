@@ -1,0 +1,85 @@
+---
+title: "Re-granting Accessibility Permissions"
+---
+
+If Badgeify loses its Accessibility permissions (for example, after a macOS update or system changes), you may need to manually re-grant these permissions. Follow these steps to restore Badgeify's access.
+
+
+Starting with **v1.9.4**, Badgeify's code signing certificate was updated from an individual Apple Developer account to an organization account. This change means:
+
+- macOS treats the updated app as a different application
+- All previously granted permissions (including Accessibility) need to be re-authorized
+- This is a one-time process required only when upgrading from versions prior to v1.9.4
+
+## Why Accessibility Permissions Are Needed
+
+Badgeify requires Accessibility permissions to:
+
+- Read notification counts from other applications
+- Monitor app badge changes in real-time
+
+Without these permissions, Badgeify cannot function properly.
+
+## How to Re-grant Accessibility Permissions
+
+### Step 1: Open System Settings
+
+1. Click the **Apple menu** () in the top-left corner of your screen
+2. Select **System Settings**
+
+### Step 2: Navigate to Accessibility Settings
+
+1. In System Settings, click on **Privacy & Security** in the sidebar
+2. Scroll down and click on **Accessibility**
+
+![Privacy & Security Settings](https://i.imgur.com/7dnjmWM.jpeg)
+
+### Step 3: Remove Badgeify from the List
+
+1. Find **Badgeify** in the list of apps
+2. Click on Badgeify to select it
+3. Click the **minus (−)** button below the list to remove it
+4. Confirm the removal if prompted
+
+### Step 4: Quit Badgeify Completely
+
+1. Right-click the Badgeify icon in your menu bar
+2. Select **Quit Badgeify**
+3. Make sure the app is completely closed
+
+### Step 5: Relaunch Badgeify
+
+1. Open **Badgeify** from your Applications folder or Launchpad
+2. You should see a system prompt asking for Accessibility permissions
+3. Click **Open System Settings** in the prompt
+
+### Step 6: Grant Accessibility Permissions
+
+1. In the Accessibility settings window, find **Badgeify** in the list
+2. Toggle the switch next to Badgeify to **ON**
+3. You may be prompted to enter your Mac password or use Touch ID
+4. Confirm the action
+
+### Step 7: Verify Permissions
+
+1. The toggle next to Badgeify should now be **ON** (blue)
+2. Return to Badgeify and check if notification counts are displaying correctly
+
+## Troubleshooting
+
+### Permission Dialog Doesn't Appear
+
+If Badgeify doesn't show the permission prompt when launched:
+
+1. Manually open **System Settings** > **Privacy & Security** > **Accessibility**
+2. Click the **plus (+)** button below the app list
+3. Navigate to your **Applications** folder
+4. Select **Badgeify** and click **Open**
+5. Toggle the switch next to Badgeify to **ON**
+
+## Still Having Issues?
+
+If you've followed these steps and Badgeify still isn't working properly:
+
+- Use the **Feedback** link in the Badgeify app
+- Email support at [support@badgeify.app](mailto:support@badgeify.app)
